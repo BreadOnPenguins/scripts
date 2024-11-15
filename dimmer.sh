@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Set monitor names before using!
 
 export DISPLAY=:0
 
