@@ -3,7 +3,7 @@
 
 
 # Sensor info
-cputemp=$(sensors | awk '/^Tdie/ {print $2}' | sed 's/+//;s/\..*$//')
+cputemp=$(sensors | awk '/^Tdie/ {print substr($2,2,2)}')
 memuse=$(free -m | awk '/^Mem/ {print ($3)/1024}'| cut -c-4)
 cpuuse=$(iostat -c | awk 'NR>=4 && NR <=4' | awk '{print "User CPU use: "$1"%\nSystem CPU use:",$3"%"}')
 gputemp=$(sensors | awk '/^edge/ {print "\n\nGPU Temp: " $2}')
