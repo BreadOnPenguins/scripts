@@ -9,6 +9,9 @@ query=$(curl -s "https://api.dictionaryapi.dev/api/v2/entries/en_US/$word")
 # Show only first 3 definitions
 def=$(echo "$query" | jq -r '[.[].meanings[] | {pos: .partOfSpeech, def: .definitions[].definition}] | .[:3].[] | "\n\(.pos). \(.def)"')
 
+# Show first definition for each part of speech (thanks @morgengabe1 on youtube)
+# def=$(echo "$query" | jq -r '.[0].meanings[] | "\(.partOfSpeech): \(.definitions[0].definition)\n"')
+
 # Show all definitions
 # def=$(echo "$query" | jq -r '.[].meanings[] | "\n\(.partOfSpeech). \(.definitions[].definition)"')
 
