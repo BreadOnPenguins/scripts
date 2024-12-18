@@ -4,7 +4,7 @@ word=$(xclip -o -selection primary)
 
 query=$(curl -s "https://api.dictionaryapi.dev/api/v2/entries/en_US/$word")
 
-[ -z $query ] && notify-send -h string:bgcolor:#bf616a -t 3000 "Invalid word." && exit 0
+[ -z "$query" ] && notify-send -h string:bgcolor:#bf616a -t 3000 "Invalid word." && exit 0
 
 # Show only first 3 definitions
 def=$(echo "$query" | jq -r '[.[].meanings[] | {pos: .partOfSpeech, def: .definitions[].definition}] | .[:3].[] | "\n\(.pos). \(.def)"')
