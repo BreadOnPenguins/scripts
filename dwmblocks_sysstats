@@ -17,7 +17,7 @@ if [[ $cputemp -gt 75 ]]; then color="#bf616a"; elif [[ $cputemp -gt 65 ]]; then
 echo $cputemp"°c" $memuse"g"
 
 
-# Clicking on bar (requires statuscmd patch)
+# Clicking on bar (requires statuscmd patch; https://dwm.suckless.org/patches/statuscmd/)
 case $BLOCK_BUTTON in
   1) setsid -w -f "$TERMINAL" -e htop ;;
   3) notify-send -h string:bgcolor:$color "$cpuuse$gputemp" ;;
