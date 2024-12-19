@@ -19,7 +19,7 @@ else
     format=$(playerctl metadata --player=$player --format '{{ trunc(artist,17) }} - {{ trunc(title,17) }}')
 fi
 
-# Requires: https://dwm.suckless.org/patches/statuscmd/
+# Clicking on bar (requires statuscmd patch; https://dwm.suckless.org/patches/statuscmd/)
 case $BLOCK_BUTTON in
   1) $player ;;
   2) playerctl --player=$player play-pause; pkill -RTMIN+11 "${STATUSBAR:-dwmblocks}" ;;
