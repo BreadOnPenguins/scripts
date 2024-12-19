@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+pidof -x playerctl-loop >/dev/null 2>&1 || playerctl-loop >/dev/null 2>&1 &
+
+music=termusic
+browser=firefox
+
+browserstatus=$(playerctl --player=$browser status)
+musicstatus=$(playerctl --player=$music status)
+
+[[ $musicstatus == "Playing" ]] && icon="🎵 " || icon="❚❚ "
+
+if [[ $browserstatus == "Playing" ]]; then
+    player=$browser
+    icon=" 🦊 "
+    title=$(playerctl --player=$browser metadata title)
+    [[ ${#title} -gt 25 ]] && title="${title:0:25}..."
+else
+    player=$music
+    artist="$(playerctl --player=$player metadata artist) - "
+    title=$(playerctl --player=$player metadata title)
+      [[ ${#title} -gt 17 ]] && title="${title:0:17}.."
+      [[ ${#artist} -gt 17 ]] && artist="${artist:0:17}.. - "
+fi
+
+case $BLOCK_BUTTON in
+  1) $player ;;
+  2) playerctl --player=$player play-pause; pkill -RTMIN+11 "${STATUSBAR:-dwmblocks}" ;;
+  3) setsid -w -f "$TERMINAL" -e pulsemixer; pkill -RTMIN+11 "${STATUSBAR:-dwmblocks}" ;;
+  4) playerctl --player=$player volume 0.05+ ;;
+  5) playerctl --player=$player volume 0.05- ;;
+  6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+echo -e "$icon$artist$title"
