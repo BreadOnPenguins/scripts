@@ -13,14 +13,10 @@ musicstatus=$(playerctl --player=$music status)
 if [[ $browserstatus == "Playing" ]]; then
     player=$browser
     icon=" 🦊 "
-    title=$(playerctl --player=$browser metadata title)
-    [[ ${#title} -gt 25 ]] && title="${title:0:25}..."
+    format=$(playerctl metadata --player=$player --format '{{ trunc(title,25) }}')
 else
     player=$music
-    artist="$(playerctl --player=$player metadata artist) - "
-    title=$(playerctl --player=$player metadata title)
-      [[ ${#title} -gt 17 ]] && title="${title:0:17}.."
-      [[ ${#artist} -gt 17 ]] && artist="${artist:0:17}.. - "
+    format=$(playerctl metadata --player=$player --format '{{ trunc(artist,17) }} - {{ trunc(title,17) }}')
 fi
 
 case $BLOCK_BUTTON in
@@ -32,7 +28,7 @@ case $BLOCK_BUTTON in
   6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
-echo -e "$icon$artist$title"
+echo -e "$icon$format"
 
 # If you want responsive updates from dwmblocks, put these in a separate script
 # playerctl -p termusic metadata title >/dev/null && kill -45 "$(pidof "${STATUSBAR:-dwmblocks}")" || break
