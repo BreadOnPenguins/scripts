@@ -33,3 +33,7 @@ case $BLOCK_BUTTON in
 esac
 
 echo -e "$icon$artist$title"
+
+# If you want responsive updates from dwmblocks, put these in a separate script
+# playerctl -p termusic metadata title >/dev/null && kill -45 "$(pidof "${STATUSBAR:-dwmblocks}")" || break
+# playerctl -p firefox metadata title > /dev/null >/dev/null && kill -45 "$(pidof "${STATUSBAR:-dwmblocks}")" || break
