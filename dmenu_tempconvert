@@ -2,14 +2,14 @@
 
 f_to_c () { \
     fahrenheit="$(echo "" | dmenu -c -sb "#bf616a" -nf "#bf616a" -p "Enter temperature in Fahrenheit: " <&-)"
-    celsius=$(echo "scale=2; ($fahrenheit - 32) * 5/9" | bc)
+    celsius=$(bc <<< "scale=2; ($fahrenheit - 32) * 5/9")
     notify-send -h string:bgcolor:#81a1c1 "$fahrenheit°F is equal to $celsius°C"
 }
 
 
 c_to_f() { \
     celsius="$(echo "" | dmenu -c -sb "#81a1c1" -nf "#81a1c1" -p "Enter temperature in Celsius: " <&-)"
-    fahrenheit=$(echo "scale=2; ($celsius * 9/5) + 32" | bc)
+    fahrenheit=$(bc <<< "scale=2; ($celsius * 9/5) + 32")
     notify-send -h string:bgcolor:#bf616a "$celsius°C is equal to $fahrenheit°F"
 }
 
