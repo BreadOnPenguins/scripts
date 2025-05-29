@@ -1,3 +1,33 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-pactl set-default-sink "$(pactl list short sinks | awk '{print $2}' | dmenu -i -l 5 -c -p "Output:")" && notify-send "Audio switched!" || exit 0
+select_audio_sink() {
+    sinks="$(pactl list sinks)"
+
+    IFS=$(echo -en "\n\b")
+    ids=($(echo "${sinks}" | grep -ioP "(?<=object.serial = ).*$"))
+    names=($(echo "${sinks}" | grep -ioP "(?<=device\.description = ).*$"))
+    unset IFS
+
+    if [[ "${#ids[@]}" != "${#names[@]}" ]]; then
+        echo "ERROR: #ids (${#ids[@]}) != #names (${#names[@]})"
+        return 1
+    fi
+
+    selection="$(printf "%s\n" "${names[@]//\"/}" | dmenu -i)"
+
+    unset number
+    for n in ${!names[@]}; do
+        if [[ "${names[$n]}" == *"${selection}"* ]]; then
+            number=$n
+        fi
+    done
+
+    if [[ -z "${number}" ]]; then
+        echo "something went wrong.."
+        return 1
+    fi
+
+    pactl set-default-sink ${ids[$number]//\"/}
+}
+
+select_audio_sink
