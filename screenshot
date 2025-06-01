@@ -1,28 +1,29 @@
 #!/usr/bin/env bash
+# Based on original script by https://github.com/TheGassyNinja
+set -euo pipefail
+export DISPLAY="${DISPLAY:-:0}"
 
-### Full credit for this script to https://github.com/TheGassyNinja
-export DISPLAY=:0
-current=$(date +%H-%M-%S-%d-%m-%Y).png
-filepath="${HOME}/${current}"
+# Output directory: default to $HOME/Screenshots
+OUTDIR="${1:-${HOME}/Screenshots}"
+mkdir -p "${OUTDIR}"
+
+current="$(date +%Y%m%d_%H%M%S).png"
+filepath="${OUTDIR}/${current}"
 
 # Determine screenshot utility
-if command -v import &> /dev/null; then
-    TOOL="import"
-elif command -v scrot &> /dev/null; then
-    TOOL="scrot"
-else
-    notify-send "Screenshot Tool Missing" "Neither ImageMagick (import) nor scrot is installed!"
-    echo "Error: No screenshot tool found (import or scrot)."
-    exit 1
-fi
+tool_path="$(command -v import 2>/dev/null || command -v scrot 2>/dev/null)" || {
+    notify-send "Screenshot Tool Missing" "Neither 'import' nor 'scrot' is installed!"
+    echo "Error: No screenshot tool found."; exit 1;
+}
+TOOL="$(basename "${tool_path}")"
 
+# Select flags based on tool and optional "-s" argument
 flags=()
-if [[ "$TOOL" == "import" ]] && [[ -z "${1}" ]]; then
-    flags=(-window root)
-elif [[ "$TOOL" == "scrot" ]] && [[ -n "${1}" ]]; then
-    flags=(--select)
-fi
-"$TOOL" "${flags[@]}" "$filepath" || exit 1
+[[ "${TOOL}" == "scrot" && "${2:-}" == "-s" ]] && flags=(--select)
+[[ "${TOOL}" == "import" && "${2:-}" != "-s" ]] && flags=(-window root)
 
-notify-send "Screenshot Taken" "Saved as ${current} in ${HOME}"
-
+"$TOOL" "${flags[@]}" "${filepath}" || {
+    notify-send "Screenshot Failed" "Could not save screenshot to ${filepath}."
+    exit 1
+}
+notify-send "Screenshot Taken" "Saved as ${current} in ${OUTDIR}"

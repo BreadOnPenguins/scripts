@@ -1,59 +1,72 @@
 #!/usr/bin/env bash
+set -euo pipefail
+export DISPLAY="${DISPLAY:-:0}"
 
-# expansion of the imagemagick screenshot script with:
-# - hex code color picker (slop + imagemagick)
-# - copy to clipboard (xclip)
-# - screenshot current window directly (no selection)
+# Dependencies check
+for cmd in xclip import notify-send; do command -v "$cmd" &>/dev/null || { echo "Missing: $cmd" >&2; exit 1; }; done
 
-export DISPLAY=:0
-FILE="$HOME/$(date +%F___%T | tr ':' '-').png"
+OUTDIR="${2:-$HOME/Screenshots}"; mkdir -p "$OUTDIR"
+FILE="$OUTDIR/$(date +%Y%m%d_%H%M%S).png"
+TMP=$(mktemp --suffix=.png); trap 'rm -f "$TMP"' EXIT
 
-colorpicker () { # click a pixel OR draw a selection for average color, returned in a notif & copied to clip
-TMP="/tmp/color.png"
-
-# slop's tolerance flag controls how far mouse can be move before being detected as a click and drag
-# would recommend use of slop as it allows for 1x1 selection
-if command -v slop >/dev/null; then 
-		import -window root -crop "$(slop --tolerance=0 || exit 0)" "$TMP"
-else 
-		import "$TMP"
-fi
-
-HEX=$(magick "$TMP" -scale 1x1\! -format "#%[hex:p{0,0}]" info:) # SRGB: '%[pixel:p{0,0}]'
-
-notify-send -i "$TMP" $HEX # set the tmp img as the notif icon
-echo "$HEX" | xclip -i -selection clipboard # copy to clip
-rm "$TMP"
+show_help(){ 
+    cat <<EOF
+Usage: $0 [color|full|window] [output_dir]
+Environment options:
+  WATERMARK=1
+  WATERMARK_TEXT='text'
+  WATERMARK_POS=position
+  WATERMARK_SIZE=px
+  WATERMARK_BG='#rrggbbaa'
+EOF
 }
 
-
-full () { # full screen incl. all monitors
-		import -window root "$FILE" && post
+post(){ 
+    [[ "${WATERMARK:-}" == "1" ]] && { 
+        command -v magick &>/dev/null || { echo "Missing: magick" >&2; exit 1; }
+        # Watermark subsystem (env overrides supported)
+        magick "$FILE" \
+            -gravity "${WATERMARK_POS:-southeast}" \
+            -pointsize "${WATERMARK_SIZE:-28}" \
+            -fill white -undercolor "${WATERMARK_BG:-#00000080}" \
+            -annotate +20+20 "${WATERMARK_TEXT:-$(date '+%Y-%m-%d %H:%M')}" \
+            "$FILE"
+    }
+    xclip -selection clipboard -t image/png -i "$FILE" && notify-send -i "$FILE" "Screenshot: $(basename "$FILE")"
 }
 
-
-window () { # focused window
-		import -window "$(xdotool getwindowfocus -f)" "$FILE"
+colorpicker(){ 
+    command -v magick &>/dev/null || { notify-send "Missing: magick"; exit 1; }
+    if command -v slop &>/dev/null; then
+        import -window root -crop "$(slop --tolerance=0 || exit 1)" "$TMP"
+    else
+        import "$TMP"
+    fi
+    hex=$(magick "$TMP" -scale 1x1\! -format "#%[hex:p{0,0}]" info: 2>/dev/null || echo "#??????")
+    echo "$hex" | xclip -selection clipboard -i && notify-send -i "$TMP" "Color: $hex"
 }
 
-
-selection () { # draw a selection, or click to select a window
-		import "$FILE" && post
+capture_full(){ 
+    import -window root "$FILE" && post
 }
 
-
-post () { # copy image to clip & send a notification
-		xclip -selection clipboard -t image/png -i $FILE && notify-send -i "$FILE" "$FILE copied to clipboard"
+capture_window(){ 
+    command -v xdotool &>/dev/null || { echo "Missing: xdotool" >&2; exit 1; }
+    import -window "$(xdotool getwindowfocus -f)" "$FILE" && post
 }
 
+capture_selection(){ 
+    import "$FILE" && post
+}
 
-case "$1" in
-		color*) colorpicker ;;
-		full) full ;;
-		window) window ;;
-		*) selection ;;
-esac
+main(){ 
+    case "${1:-}" in
+        -h|--help) show_help ;;
+        color*)    colorpicker ;;
+        full)      capture_full ;;
+        window)    capture_window ;;
+        *)         capture_selection ;;
+    esac
+}
 
-# watermark automation example
-# !! repage for centered gravity when screenshotting a selection !!
-# import png:- | magick - +repage -gravity center -fill white -undercolor '#00000080' -pointsize 50 -annotate 0 'bread' watermark.png
+main "$@"
