@@ -1,19 +1,55 @@
 #!/usr/bin/env bash
 # Set audio sinks before using!
 # `pactl list sinks` if on pulseaudio.
+# `wpctl status` if on pipewire
+
+set_source() { \
+  local SINK_NAME=$1
+  local PIPEWIRE=0
+  local PULSEAUDIO=0
+
+  if [ "$(systemctl --user is-active pipewire)" = "active" ]; then
+    PIPEWIRE=1
+  elif [ "$(systemctl --user is-active pulseaudio)" = "active" ]; then
+    PULSEAUDIO=1
+  fi
+  if [ $PULSEAUDIO -eq 1 ]; then
+    pacmd set-default-sink $SINK_NAME &
+  elif [ $PIPEWIRE -eq 1 ]; then
+    wpctl set-default $SINK_NAME
+  fi
+}
+
+enable_and_connect() {
+  local B_NAME=$1
+  if [ $(bluetoothctl show | grep Powered | awk '{print $2}') == "no" ]; then
+    echo "Bluetooth is disabled"
+    echo "Enabling Bluetooth..."
+    bluetoothctl power on > /dev/null
+  fi
+  local DEVICE=$(bluetoothctl devices | grep -w $B_NAME | awk '{print $2}')
+  if [ -z "$DEVICE" ]; then
+    echo "Device not found: $B_NAME"
+    return 1
+  fi
+  if bluetoothctl info "$DEVICE" | grep -q "Connected: no"; then  
+    bluetoothctl connect $DEVICE > /dev/null
+  fi
+}
 
 headphones () { \
-  pacmd set-default-sink "SET SINK NAME" &
+  set_source "SET SINK NAME OR DEVICE ID"
   notify-send  -h string:bgcolor:#a3be8c "Audio switched to headphones!"
 }
 
 speakers () { \
-  pacmd set-default-sink "SET SINK NAME" &
+  set_source "SET SINK NAME OR DEVICE ID"
   notify-send  -h string:bgcolor:#bf616a "Audio switched to speakers!"
 }
 
 bluetooth () { \
-  pacmd set-default-sink "SET SINK NAME" &
+  enable_and_connect "SET NAME OF YOUR BLUETOOTH DEVICE"
+  set_source "SET SINK NAME OR DEVICE ID"
   notify-send  -h string:bgcolor:#88c0d0 "Audio switched to bluetooth!"
 }
 
