@@ -9,14 +9,9 @@ set_source() { \
   local PULSEAUDIO=0
 
   if [ "$(systemctl --user is-active pipewire)" = "active" ]; then
-    PIPEWIRE=1
-  elif [ "$(systemctl --user is-active pulseaudio)" = "active" ]; then
-    PULSEAUDIO=1
-  fi
-  if [ $PULSEAUDIO -eq 1 ]; then
-    pacmd set-default-sink $SINK_NAME &
-  elif [ $PIPEWIRE -eq 1 ]; then
     wpctl set-default $SINK_NAME
+  elif [ "$(systemctl --user is-active pulseaudio)" = "active" ]; then
+    pacmd set-default-sink $SINK_NAME &
   fi
 }
 
