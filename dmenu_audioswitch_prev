@@ -49,6 +49,7 @@ bluetooth () { \
 }
 
 choosespeakers() { \
+  # If the script is not rendering in dmenu, remove the `-c` flag from dmenu commands.
   choice=$(printf "Headphones\\nSpeakers\\nBluetooth" | dmenu -c -l 3 -i -p "Choose output: ")
   case "$choice" in
     Headphones) headphones;;
