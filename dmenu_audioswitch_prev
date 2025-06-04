@@ -38,19 +38,21 @@ headphones () { \
 }
 
 speakers () { \
-  set_source 45
+  set_source "SET SINK NAME OR DEVICE ID"
   notify-send  -h string:bgcolor:#bf616a "Audio switched to speakers!"
 }
 
 bluetooth () { \
-  enable_and_connect "WH-1000XM4"
-  set_source 50 # the source ID will change every time you connect a bluetooth device, so you may need to change this often
+  enable_and_connect "DEVICE NAME"
+  set_source "SET SINK NAME OR DEVICE ID"
+  # the source ID will change every time you connect a bluetooth device, so you may need to change this often
+  # might need to do a function to get the source ID or name dynamically
   notify-send  -h string:bgcolor:#88c0d0 "Audio switched to bluetooth!"
 }
 
 choosespeakers() { \
   # If the script is not rendering in dmenu, remove the `-c` flag from dmenu commands.
-  choice=$(printf "Headphones\\nSpeakers\\nBluetooth" | dmenu -l 3 -i -p "Choose output: ")
+  choice=$(printf "Headphones\\nSpeakers\\nBluetooth" | dmenu -c -l 3 -i -p "Choose output: ")
   case "$choice" in
     Headphones) headphones;;
     Speakers) speakers;;
