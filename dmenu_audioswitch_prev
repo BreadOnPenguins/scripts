@@ -5,28 +5,28 @@
 
 set_source() { \
   local SINK_NAME=$1
-  local PIPEWIRE=0
-  local PULSEAUDIO=0
-
-  if [ "$(systemctl --user is-active pipewire)" = "active" ]; then
+  if systemctl --user is-active pipewire; then
     wpctl set-default $SINK_NAME
-  elif [ "$(systemctl --user is-active pulseaudio)" = "active" ]; then
+  elif systemctl --user is-active pulseaudio; then
     pacmd set-default-sink $SINK_NAME &
+  else
+    notify-send "No audio system detected. Please ensure PipeWire or PulseAudio is running."
+    return 1
   fi
 }
 
 enable_and_connect() {
   local B_NAME=$1
-  if [ $(bluetoothctl show | grep Powered | awk '{print $2}') == "no" ]; then
-    echo "Bluetooth is disabled"
-    echo "Enabling Bluetooth..."
+  if [ "$(bluetoothctl show | awk '/Powered/ {print $2}')" == "no" ]; then
+    notify-send "Enabling Bluetooth..."
     bluetoothctl power on > /dev/null
   fi
-  local DEVICE=$(bluetoothctl devices | grep -w $B_NAME | awk '{print $2}')
-  if [ -z "$DEVICE" ]; then
-    echo "Device not found: $B_NAME"
+  local DEVICE_INDEX="$(bluetoothctl devices | cut -d ' ' -f3- | grep -nFx "$B_NAME" | cut -d ':' -f1)"
+  if [ -z "$DEVICE_INDEX" ]; then
+    notify-send "Device not found: $B_NAME"
     return 1
   fi
+  local DEVICE="$(bluetoothctl devices | head -n"$DEVICE_INDEX" | tail -n1 | cut -d ' ' -f2)"
   if bluetoothctl info "$DEVICE" | grep -q "Connected: no"; then  
     bluetoothctl connect $DEVICE > /dev/null
   fi
@@ -38,19 +38,19 @@ headphones () { \
 }
 
 speakers () { \
-  set_source "SET SINK NAME OR DEVICE ID"
+  set_source 45
   notify-send  -h string:bgcolor:#bf616a "Audio switched to speakers!"
 }
 
 bluetooth () { \
-  enable_and_connect "SET NAME OF YOUR BLUETOOTH DEVICE"
-  set_source "SET SINK NAME OR DEVICE ID"
+  enable_and_connect "WH-1000XM4"
+  set_source 50 # the source ID will change every time you connect a bluetooth device, so you may need to change this often
   notify-send  -h string:bgcolor:#88c0d0 "Audio switched to bluetooth!"
 }
 
 choosespeakers() { \
   # If the script is not rendering in dmenu, remove the `-c` flag from dmenu commands.
-  choice=$(printf "Headphones\\nSpeakers\\nBluetooth" | dmenu -c -l 3 -i -p "Choose output: ")
+  choice=$(printf "Headphones\\nSpeakers\\nBluetooth" | dmenu -l 3 -i -p "Choose output: ")
   case "$choice" in
     Headphones) headphones;;
     Speakers) speakers;;
