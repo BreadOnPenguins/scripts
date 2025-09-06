@@ -4,7 +4,7 @@ folder=$HOME/notes/
 
 newnote () { \
   name="$(echo "" | dmenu -c -sb "#a3be8c" -nf "#d8dee9" -p "Enter a name: " <&-)" || exit 0
-  : "${name:=$(date +%F_%T | tr ':' '-')}"
+  : "${name:=$(date +%F_%H-%M-%S)}"
   setsid -f "$TERMINAL" -e nvim $folder$name".md" >/dev/null 2>&1
 }
 
