@@ -2,6 +2,12 @@
 
 histfile="$HOME/.cache/cliphist"
 placeholder="<NEWLINE>"
+clearstring="Clear history"
+max_entries=25
+
+clearhist() {
+  rm "$histfile" && touch "$histfile"
+  notification="Clipboard history deleted" ;}
 
 highlight() {
   clip=$(xclip -o -selection primary | xclip -i -f -selection clipboard 2>/dev/null) ;}
@@ -13,12 +19,15 @@ write() {
   [ -f "$histfile" ] || notify-send "Creating $histfile"; touch $histfile
   [ -z "$clip" ] && exit 0
   multiline=$(echo "$clip" | sed ':a;N;$!ba;s/\n/'"$placeholder"'/g')
-  grep -Fxq "$multiline" "$histfile" || echo "$multiline" >> "$histfile"
+  grep -Fxq "$multiline" "$histfile" || echo "$multiline" | cat "$histfile" - | tail -qn "$max_entries" | tee "$histfile" 2>/dev/null
   notification=$(echo \"$multiline\") ;}
 
 sel() {
-  selection=$(tac "$histfile" | dmenu -b -l 5 -i -p "Clipboard history:")
-  [ -n "$selection" ] && echo "$selection" | sed "s/$placeholder/\n/g" | xclip -i -selection clipboard && notification="Copied to clipboard!" ;}
+  selection=$(echo "$clearstring" | tac "$histfile" - | dmenu -b -l 5 -i -p "Clipboard history:")
+  if [ -n "$selection" ]; then
+    [ "$selection" = "$clearstring" ] && { clearhist; return; }
+    echo "$selection" | sed "s/$placeholder/\n/g" | xclip -i -selection clipboard && notification="Copied to clipboard!"
+  fi ;}
 
 case "$1" in
   add) highlight && write ;;
