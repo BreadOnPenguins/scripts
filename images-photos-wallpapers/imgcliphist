@@ -32,9 +32,9 @@ copy() { # my fzfub script has ctrl-c and enter bound to copy
 		[[ -n $(file -b --mime-type "$2" | grep png) ]] && xclip -i -selection clipboard -t image/png "$2" && notify-send -i $2 "reclipped img " ;}
 
 case "$1" in
-		add*) add "$@" ;;
-		link*) link "$@" ;;
-		sel*) sel "$@" ;;
-		copy*) copy "$@" ;;
+		add*) add "$@" ;; # add an image to history
+		link*) link "$@" ;; # download an image from copied link, and add to history
+		sel*) sel "$@" ;; # selection menu
+		copy*) copy "$@" ;; # re-copy an image
 		*) printf "$0 | file: $hist\n\nimage clipboard history: requires fzf+ueberzugpp wrapper, xclip\nset terminal command in sel()\n\n" ; exit 0 ;;
 esac
