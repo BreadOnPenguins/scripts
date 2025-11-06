@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# my script for recording guitar amp output
+# todo globalize pactl and pulse commands
+
+record() {
+		# pactl list short modules
+		pactl unload-module module-loopback
+		# pactl list short sources / pactl list short sinks
+		pactl load-module module-loopback latency_msec=15 source=3 sink=1
+		ffmpeg -f pulse -i 3 "$HOME/guitar_$(date '+%a__%b%d__%H_%M_%S').wav" &
+		echo $! > /tmp/guitarpid
+		echo "Rec 🎸•" > /tmp/recordingicon && pkill -RTMIN+3 dwmblocks
+		notify-send -t 500 -h string:bgcolor:#a3be8c "Recording guitar..."
+}
+
+end() {
+		killall ffmpeg & rm -f /tmp/guitarpid
+		pactl unload-module module-loopback
+		echo "" > /tmp/recordingicon && pkill -RTMIN+3 dwmblocks
+		notify-send -t 500 -h string:bgcolor:#bf616a "Guitar recording ended."
+}
+
+# If the recording pid exists, end recording. If not, start recording
+([[ -f /tmp/guitarpid ]] && end && exit 0) || record
