@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# interactive rename (move) for multiple files
+
+
+# ask for the new name, set initialize counter as 1
+read -rp "rename: " name || exit 0
+i=1
+
+for f in "$@"; do
+
+    # isolate all of the pieces we need for a filename.
+
+    [ "$f" = "${f%/*}" ] || directory="${f%/*}"  # remove everything from final slash to end of string
+    file="${f##*/}" # remove everything up to and incl. final slash
+    [ "$f" = "${f%.*}" ] || extension="${f##*.}" # remove everything up to and incl. the dot
+
+	# set the new name:
+	# expand directory if non-empty
+	# if no name, put the date
+	# expand extension if non-empty
+
+    new="${directory:+$directory/}${name:-$(date '+%a__%b%d__%H_%M_%S_')}${i}${extension:+.$extension}"
+
+	# mv's interactive command (to prompt if an overwrite)
+    mv -i "$f" "$new" && notify-send "'$f' renamed '$new'"
+
+    ((i++)) # increase counter as we loop through files
+
+done
