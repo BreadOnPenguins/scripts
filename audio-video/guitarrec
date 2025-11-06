@@ -15,7 +15,7 @@ record() {
 }
 
 end() {
-		killall ffmpeg & rm -f /tmp/guitarpid
+		kill -15 "$(cat /tmp/guitarpid)" && rm -f /tmp/guitarpid
 		pactl unload-module module-loopback
 		echo "" > /tmp/recordingicon && pkill -RTMIN+3 dwmblocks
 		notify-send -t 500 -h string:bgcolor:#bf616a "Guitar recording ended."
