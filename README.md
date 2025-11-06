@@ -25,9 +25,11 @@
 #### audio-video
 📹 [video and screen recording](https://github.com/BreadOnPenguins/scripts/blob/master/audio-video/record) \
 🎥 [ffmpeg recording editor](https://github.com/BreadOnPenguins/scripts/blob/master/audio-video/editrec) \
+🎸 [guitar recording setup](https://github.com/BreadOnPenguins/scripts/blob/master/audio-video/guitarrec) \
 🔊 [dmenu audio output switcher - upgrade](https://github.com/BreadOnPenguins/scripts/blob/master/audio-video/audioswitch) \
 🎧 [dmenu audio output switcher - original](https://github.com/BreadOnPenguins/scripts/blob/master/audio-video/old-audioswitch)
 #### shell
 🌛 [cronjob display dimmer / night mode](https://github.com/BreadOnPenguins/scripts/blob/master/shell/dimmer) \
+📁 [interactive move](https://github.com/BreadOnPenguins/scripts/blob/master/shell/imv) \
 🌪️ [xephyr setup](https://github.com/BreadOnPenguins/scripts/blob/master/shell/xephyr) \
 ⛈️ [quickcheck system stats](https://github.com/BreadOnPenguins/scripts/blob/master/shell/stats)
