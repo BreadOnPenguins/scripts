@@ -1,0 +1,94 @@
+#!/bin/bash
+# explicitly setting display bc cronjob
+export DISPLAY=:0
+
+# urls!
+forecasturl="https://services.swpc.noaa.gov/text/3-day-geomag-forecast.txt"
+viewlineurl="https://services.swpc.noaa.gov/experimental/images/aurora_dashboard/tonights_static_viewline_forecast.png"
+latesturl="https://services.swpc.noaa.gov/images/animations/ovation/north/latest.jpg"
+kurl="https://services.swpc.noaa.gov/images/station-k-index.png"
+
+# file locations, kill command for statusbar
+forecast="$HOME/.cache/aurora.txt"
+viewline="$HOME/.cache/aurora.png"
+latest="$HOME/.cache/aurora_latest.jpg"
+kindex="$HOME/.cache/aurora_kindex.png"
+combo="$HOME/.cache/aurora_combo.jpg"
+killcmd=$(pkill -RTMIN+7 dwmblocks)
+
+# threshold values
+threshold=3.99
+critical=6.99
+
+# goal: get the max value for my nighttime: 
+# 	hours 21-00 from day 1; 00-12 from day 2
+
+# awk '{a[NR]=$3; b=$2} END { print b " " a[NR-7] }' .cache/aurora.txt
+#	add the values from line numbers (beginning at end) to an array for column3
+#   then print last value of today (b), and first value of tomorrow (bc it's 7 lines back)
+
+# init val to the last # in column 1 to ensure it's included
+# 	loop the 4 values we need from column 2 (lines 7 from end to 4 from end)
+# 	compare loop value to init'd val --> set val to that loop value if greater
+# then print the val
+
+value=$(awk '{a[NR]=$3; b=$2} END {val=b
+		for (i=NR-7; i<=NR-4; i++)
+		if (a[i]>val) val=a[i]
+		print val}' $forecast)
+
+# echo the value i want to bar (removing extra decimals)
+tobar () {
+		if [[ "$value" > "$critical" ]]; then echo 🌈${value:0:1}
+		elif [[ "$value" > "$threshold" ]]; then echo 🌈${value:0:1}
+		fi
+}
+
+# extra command just to see data if needed
+data () {
+		cat $forecast
+}
+
+# bound to a hotkey.. pull up the recently downloaded images w/ mpv
+images () {
+		# nsxiv -i $viewline $latest $kindex
+		setsid -f mpv --title="Aurora" --idle --autofit=50% \
+		--background=none --loop-playlist --image-display-duration=10 \
+		$viewline $latest $kindex
+}
+
+# full update, i run it in a cronjob
+update () {
+	    curl -so $forecast $forecasturl && \
+		curl -so $latest $latesturl && \
+		curl -so $viewline $viewlineurl && \
+		curl -so $kindex $kurl && \
+		$killcmd && \
+		magick $latest $viewline -resize x512 +append $combo && \
+		notify-send -t 30000 -u low -i $viewline "🌈Aurora Forecast Updated" "$(tail -n 9 $forecast)"
+}
+
+# script usage
+case "$1" in
+		u*) update ;;
+		i*) images ;;
+		d*) data ;;
+		h*) echo "aurora: update | images | data | tobar --- set urls + files in script" ;;
+		*) tobar ;;
+esac
+
+# clickable bar commands + notifications
+case $BLOCK_BUTTON in
+		1) notify-send -t 60000 -u low -i $combo "Aurora Latest Forecast (right-click: kindex)" "$(tail -n 9 $forecast)" ;;
+		2) curl -so $forecast $forecasturl && \
+			curl -so $latest $latesturl && \
+			curl -so $viewline $viewlineurl && \
+			curl -so $kindex $kurl && \
+			$killcmd && \
+			magick $latest $viewline -resize x512 +append $combo && \
+			notify-send -i $latest "Aurora forecast updated!" "Left-click, right-click, or scroll" ;;
+		3) notify-send -t 60000 -u low -i $kindex "Aurora Kp Index (left-click: latest/viewline)" "$(tail -n 9 $forecast)" ;;
+		4) notify-send -t 60000 -u low -i $latest "Latest Aurora Forecast" "$(tail -n 9 $forecast)" ;;
+		5) notify-send -t 60000 -u low -i $viewline "Tonight's Aurora Forecast" "$(tail -n 9 $forecast)" ;;
+		6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
