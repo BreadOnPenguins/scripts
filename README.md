@@ -14,7 +14,8 @@
 💾 [storage and disk stats](https://github.com/BreadOnPenguins/scripts/blob/master/statusbar/disks) \
 🐏 [system stats (cpu, ram, etc)](https://github.com/BreadOnPenguins/scripts/blob/master/statusbar/systemstats) \
 ⏲️ [dmenu quick timer](https://github.com/BreadOnPenguins/scripts/blob/master/statusbar/timer) \
-🕰️ [basic timedate](https://github.com/BreadOnPenguins/scripts/blob/master/statusbar/timedate)
+🕰️ [basic timedate](https://github.com/BreadOnPenguins/scripts/blob/master/statusbar/timedate) \
+🌈 [aurora forecast](https://github.com/BreadOnPenguins/scripts/blob/master/statusbar/aurora)
 #### shortcuts-menus
 ⚡ [system functions (d)menu](https://github.com/BreadOnPenguins/scripts/blob/master/shortcuts-menus/sys) \
 ✏️ [dmenu notes manager](https://github.com/BreadOnPenguins/scripts/blob/master/shortcuts-menus/notes) \
