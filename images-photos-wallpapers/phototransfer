@@ -4,24 +4,23 @@
 # then prompt if the user wishes to open Darktable or unmount the sd card
 
 FOLDER=~/
-NOTIFYCMD=$(which dunstify 2>/dev/null || which fyi 2>/dev/null) # use dunstify if available, otherwise fyi
 MENUCMD=$(which wmenu 2>/dev/null || which dmenu 2>/dev/null) # use wmenu if available, otherwise dmenu
 
 mount() { # Check if the card is mounted
-		[ -d /mnt/sdcard/DCIM/ ] || $NOTIFYCMD "Card not mounted."
+		[ -d /mnt/sdcard/DCIM/ ] || fyi "Card not mounted."
 }
 
 unmount() { # Unmount card
-		sudo systemd-mount --unmount /mnt/sdcard && $NOTIFYCMD "Card unmounted."
+		sudo systemd-mount --unmount /mnt/sdcard && fyi "Card unmounted."
 }
 
 dt() { # Open darktable to import today's photos
-		sudo systemd-mount --unmount /mnt/sdcard && $NOTIFYCMD "Card unmounted; opening Darktable"
+		sudo systemd-mount --unmount /mnt/sdcard && fyi "Card unmounted; opening Darktable"
 		(darktable "$folder$(date '+%b_%d')") &
 }
 
 postrun() { # Menu to select what I want to do after photos have been transferred
-		$NOTIFYCMD "Photos have transferred."
+		fyi "Photos have transferred."
 		choice=$(printf "Unmount card\\nOpen Darktable, unmount\\nDo nothing" | $MENUCMD -c -l 3 -i -p "Photos have transferred: ")
 		case "$choice" in
 				Unmount*) unmount;;
@@ -32,7 +31,7 @@ postrun() { # Menu to select what I want to do after photos have been transferre
 
 auto() { # Transfer photos from SD card into a directory for today's date
 		[ -d /mnt/sdcard/DCIM/ ] || exit 0
-		$NOTIFYCMD "Photo transfer starting..."
+		fyi "Photo transfer starting..."
 
 		mkdir -p "$folder$(date '+%b_%d')"
 		find /mnt/sdcard -type f -name "*.CR2" -exec mv -nv {} "$FOLDER$(date '+%b_%d')/" \; && postrun

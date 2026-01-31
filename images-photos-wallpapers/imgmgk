@@ -7,67 +7,66 @@
 # TODO fix watermark scale factor
 
 WATERMARK=~/pics/watermark.png
-NOTIFYCMD=$(which dunstify 2>/dev/null || which fyi 2>/dev/null) # dunstify if available, otherwise fyi
 
 watermark() { for IMG in $@; do
-		    	# composite -compose multiply -gravity SouthWest -geometry +99+99 $WATERMARK $IMG "${IMG}.watermark" && $NOTIFYCMD "Watermarked $IMG."
-				composite -compose overlay -gravity center -dissolve 40% $WATERMARK $IMG "${IMG}.watermark" && $NOTIFYCMD "Watermarked $IMG."
+		    	# composite -compose multiply -gravity SouthWest -geometry +99+99 $WATERMARK $IMG "${IMG}.watermark" && fyi "Watermarked $IMG."
+				composite -compose overlay -gravity center -dissolve 40% $WATERMARK $IMG "${IMG}.watermark" && fyi "Watermarked $IMG."
 		done ;}
 
 convpng() { for IMG in $@; do
-				mogrify -format png $IMG && $NOTIFYCMD "Converted $IMG to png."
+				mogrify -format png $IMG && fyi "Converted $IMG to png."
 		done ;}
 convjpg() { for IMG in $@; do
-				mogrify -format jpg $IMG && $NOTIFYCMD "Converted $IMG to jpg."
+				mogrify -format jpg $IMG && fyi "Converted $IMG to jpg."
 		done ;}
 
 border() { for IMG in $@; do
-		magick $IMG -bordercolor black -border 50x50 "$IMG.border" && $NOTIFYCMD "Added black border to $IMG."
+		magick $IMG -bordercolor black -border 50x50 "$IMG.border" && fyi "Added black border to $IMG."
 		done ;} # this does not crop the image: it adds a border externally
 
 wborder() { for IMG in $@; do
-		magick $IMG -bordercolor white -border 50x50 "$IMG.border" && $NOTIFYCMD "Added white border to $IMG."
+		magick $IMG -bordercolor white -border 50x50 "$IMG.border" && fyi "Added white border to $IMG."
 		done ;} # this does not crop the image: it adds a border externally
 
 cropborder() { for IMG in $@; do
-		magick $IMG -fill black -stroke none -draw "rectangle 0,0 %[fx:w],%[fx:h*0.05] rectangle 0,0 %[fx:w*0.05],%[fx:h] rectangle %[fx:w-w*0.05],0 %[fx:w],%[fx:h] rectangle 0,%[fx:h-h*0.05] %[fx:w],%[fx:h]" "$IMG.cropborder" && $NOTIFYCMD "Cropped+bordered $IMG."
+		magick $IMG -fill black -stroke none -draw "rectangle 0,0 %[fx:w],%[fx:h*0.05] rectangle 0,0 %[fx:w*0.05],%[fx:h] rectangle %[fx:w-w*0.05],0 %[fx:w],%[fx:h] rectangle 0,%[fx:h-h*0.05] %[fx:w],%[fx:h]" "$IMG.cropborder" && fyi "Cropped+bordered $IMG."
 		done ;} # this crops the image: it adds a border internally
 
 bw() { for IMG in $@; do
-		magick $IMG -colorspace Gray "$IMG.bw" && $NOTIFYCMD "B&W'd $IMG."
+		magick $IMG -colorspace Gray "$IMG.bw" && fyi "B&W'd $IMG."
 		done ;}
 
 transparency() { for IMG in $@; do
-		magick $IMG -alpha off -fuzz 10% -fill none -draw "alpha 0,0 floodfill" \( +clone -alpha extract -blur 0x2 -level 50x100% \) -alpha off -compose copy_opacity -composite "$IMG.trnsprnt" && $NOTIFYCMD "Removed background from $IMG."
+		magick $IMG -alpha off -fuzz 10% -fill none -draw "alpha 0,0 floodfill" \( +clone -alpha extract -blur 0x2 -level 50x100% \) -alpha off -compose copy_opacity -composite "$IMG.trnsprnt" && fyi "Removed background from $IMG."
 		done ;}
 
 transparencyrecopy() { for IMG in $@; do
 		magick $IMG -alpha off -fuzz 10% -fill none -draw "alpha 0,0 floodfill" \( +clone -alpha extract -blur 0x2 -level 50x100% \) -alpha off -compose copy_opacity -composite "$IMG.trnsprnt"
 		xclip -i -selection clipboard -t image/png "$IMG.trnsprnt"
-		$NOTIFYCMD -i "$IMG.trnsprnt" "$IMG background removed and recopied "
+		fyi -i "$IMG.trnsprnt" "$IMG background removed and recopied "
 		done ;}
 
 scale() { for IMG in $@; do
-		mogrify $IMG -scale 50% $IMG.scale && $NOTIFYCMD "Scaled $IMG to 50%."
+		mogrify $IMG -scale 50% $IMG.scale && fyi "Scaled $IMG to 50%."
 		done ;}
 
 flip() { for IMG in $@; do
-		magick $IMG -flop $IMG.flip && $NOTIFYCMD "Horizontally flipped $IMG."
+		magick $IMG -flop $IMG.flip && fyi "Horizontally flipped $IMG."
 		done ;}
 
 vflip() { for IMG in $@; do
-		magick $IMG -flip $IMG.vflip && $NOTIFYCMD "Vertically flipped $IMG."
+		magick $IMG -flip $IMG.vflip && fyi "Vertically flipped $IMG."
 		done ;}
 
 
 case $1 in
-		wm) 
+		wm)
 				shift
 				watermark "$@" ;;
-		png) 
+		png)
 				shift
 				convpng "$@" ;;
-		jpg) 
+		jpg)
 				shift
 				convjpg "$@" ;;
 		border)
