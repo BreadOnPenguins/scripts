@@ -20,7 +20,7 @@ record() {
 
   echo "Rec •" > /tmp/recordingicon && pkill -RTMIN+3 dwmblocks
 
-  notify-send -t 500 -h string:bgcolor:#a3be8c "Recording started & mic toggled"
+  fyi -t 500 -H "string:bgcolor:#a3be8c" "Recording started & mic toggled"
   }
 
 end() {
@@ -30,7 +30,7 @@ end() {
 
   echo "" > /tmp/recordingicon && pkill -RTMIN+3 dwmblocks
 
-  notify-send -t 500 -h string:bgcolor:#bf616a "Recording ended & mic toggled"
+  fyi -t 500 -H "string:bgcolor:#bf616a" "Recording ended & mic toggled"
   }
 
 # If the recording pid exists, end recording. If not, start recording

@@ -4,17 +4,17 @@
 
 headphones () { \
   pacmd set-default-sink "SET SINK NAME" &
-  notify-send  -h string:bgcolor:#a3be8c "Audio switched to headphones!"
+  fyi -H "string:bgcolor:#a3be8c" "Audio switched to headphones!"
 }
 
 speakers () { \
   pacmd set-default-sink "SET SINK NAME" &
-  notify-send  -h string:bgcolor:#bf616a "Audio switched to speakers!"
+  fyi -H "string:bgcolor:#bf616a" "Audio switched to speakers!"
 }
 
 bluetooth () { \
   pacmd set-default-sink "SET SINK NAME" &
-  notify-send  -h string:bgcolor:#88c0d0 "Audio switched to bluetooth!"
+  fyi -H "string:bgcolor:#88c0d0" "Audio switched to bluetooth!"
 }
 
 choosespeakers() { \

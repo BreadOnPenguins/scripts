@@ -7,7 +7,7 @@
 # TODO fix watermark scale factor
 
 WATERMARK=~/pics/watermark.png
-NOTIFYCMD=$(which dunstify 2>/dev/null || which notify-send 2>/dev/null) # dunstify if available, otherwise notify-send
+NOTIFYCMD=$(which dunstify 2>/dev/null || which fyi 2>/dev/null) # dunstify if available, otherwise fyi
 
 watermark() { for IMG in $@; do
 		    	# composite -compose multiply -gravity SouthWest -geometry +99+99 $WATERMARK $IMG "${IMG}.watermark" && $NOTIFYCMD "Watermarked $IMG."
@@ -98,5 +98,5 @@ case $1 in
 				shift
 				vflip "$@" ;;
 
-		*) notify-send "imgmgk🪄" "1st arg: wm, png, jpg, border, wborder, bw, transparency, transparencyrecopy, scale, flip, vflip. Further args: files." && exit 0 ;;
+		*) fyi "imgmgk🪄" "1st arg: wm, png, jpg, border, wborder, bw, transparency, transparencyrecopy, scale, flip, vflip. Further args: files." && exit 0 ;;
 esac

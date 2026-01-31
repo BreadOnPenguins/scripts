@@ -5,7 +5,7 @@
 
 FOLDER=~/pics # global folder with subdirs to be listed
 WATERMARK=~/pics/watermark.png
-NOTIFYCMD=$(which dunstify 2>/dev/null || which notify-send 2>/dev/null) # use dunstify if available, otherwise notify-send
+NOTIFYCMD=$(which dunstify 2>/dev/null || which fyi 2>/dev/null) # use dunstify if available, otherwise fyi
 MENUCMD=$(which wmenu 2>/dev/null || which dmenu 2>/dev/null) # use wmenu if available, otherwise dmenu
 
 fzimgmgk() { # requires fzfub + imgmgk script (in this repo). if you aren't using st, switch shell+parameters
@@ -63,7 +63,7 @@ dttg () { # export and open most recent Darktable raw in Gimp as a png.
 # However, an externally called shortcut/export makes more sense for my own workflow.
 # See: https://docs.darktable.org/lua/stable/lua.scripts.manual/scripts/contrib/gimp/
 
-[[ -z $(pidof darktable) ]] || $(notify-send "Quit Darktable cleanly first!" && exit 0)
+[[ -z $(pidof darktable) ]] || $(fyi "Quit Darktable cleanly first!" && exit 0)
 DBLOC="$XDG_CONFIG_HOME/darktable/library.db" # Darktable's library db location
 
 IMGPATH=$(sqlite3 -readonly "$DBLOC" "
@@ -79,7 +79,7 @@ if [[ -e ${IMGPATH::-4}.png ]]; then
 		$NOTIFYCMD "Opening ${IMGPATH::-4}.png in GIMP."
 		gimp ${IMGPATH::-4}.png
 else
-		$NOTIFYCMD -t 3000 "Exporting ${IMGPATH::-4}.png..." && darktable-cli $IMGPATH ${IMGPATH::-4}.png && notify-send "${IMGPATH::-4}.png exported. Opening GIMP." && gimp ${IMGPATH::-4}.png
+		$NOTIFYCMD -t 3000 "Exporting ${IMGPATH::-4}.png..." && darktable-cli $IMGPATH ${IMGPATH::-4}.png && fyi "${IMGPATH::-4}.png exported. Opening GIMP." && gimp ${IMGPATH::-4}.png
 fi
 }
 

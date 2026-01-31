@@ -4,7 +4,7 @@
 # then prompt if the user wishes to open Darktable or unmount the sd card
 
 FOLDER=~/
-NOTIFYCMD=$(which dunstify 2>/dev/null || which notify-send 2>/dev/null) # use dunstify if available, otherwise notify-send
+NOTIFYCMD=$(which dunstify 2>/dev/null || which fyi 2>/dev/null) # use dunstify if available, otherwise fyi
 MENUCMD=$(which wmenu 2>/dev/null || which dmenu 2>/dev/null) # use wmenu if available, otherwise dmenu
 
 mount() { # Check if the card is mounted

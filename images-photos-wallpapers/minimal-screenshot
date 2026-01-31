@@ -12,7 +12,7 @@ filepath="${OUTDIR}/${current}"
 
 # Determine screenshot utility
 tool_path="$(command -v import 2>/dev/null || command -v scrot 2>/dev/null)" || {
-    notify-send "Screenshot Tool Missing" "Neither 'import' nor 'scrot' is installed!"
+    fyi "Screenshot Tool Missing" "Neither 'import' nor 'scrot' is installed!"
     echo "Error: No screenshot tool found."; exit 1;
 }
 TOOL="$(basename "${tool_path}")"
@@ -23,7 +23,7 @@ flags=()
 [[ "${TOOL}" == "import" && "${2:-}" != "-s" ]] && flags=(-window root)
 
 "$TOOL" "${flags[@]}" "${filepath}" || {
-    notify-send "Screenshot Failed" "Could not save screenshot to ${filepath}."
+    fyi "Screenshot Failed" "Could not save screenshot to ${filepath}."
     exit 1
 }
-notify-send "Screenshot Taken" "Saved as ${current} in ${OUTDIR}"
+fyi "Screenshot Taken" "Saved as ${current} in ${OUTDIR}"

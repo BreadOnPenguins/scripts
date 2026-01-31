@@ -22,7 +22,7 @@ for f in "$@"; do
     new="${directory:+$directory/}${name:-$(date '+%a__%b%d__%H_%M_%S_')}${i}${extension:+.$extension}"
 
 	# mv's interactive command (to prompt if an overwrite)
-    mv -i "$f" "$new" && notify-send "'$f' renamed '$new'"
+    mv -i "$f" "$new" && fyi "'$f' renamed '$new'"
 
     ((i++)) # increase counter as we loop through files
 
