@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 
-command -v bc >/dev/null || { notify-send "Error: bc not found"; exit 1; }
+command -v bc >/dev/null || { fyi "Error: bc not found"; exit 1; }
 
 f_to_c () { \
     fahrenheit="$(echo "" | dmenu -c -sb "#bf616a" -nf "#bf616a" -p "Enter temperature in Fahrenheit: " <&-)"
     [ -z "$fahrenheit" ] && exit
-    [[ "$fahrenheit" =~ ^-?[0-9]+(\.[0-9]+)?$ ]] || { notify-send "Error: Not a valid number"; exit 1; }
+    [[ "$fahrenheit" =~ ^-?[0-9]+(\.[0-9]+)?$ ]] || { fyi "Error: Not a valid number"; exit 1; }
     celsius=$(bc <<< "scale=2; ($fahrenheit - 32) * 5/9")
-    notify-send -h string:bgcolor:#81a1c1 "$fahrenheit°F is equal to $celsius°C"
+    fyi -H "string:bgcolor:#81a1c1" "$fahrenheit°F is equal to $celsius°C"
 }
 
 
 c_to_f() { \
     celsius="$(echo "" | dmenu -c -sb "#81a1c1" -nf "#81a1c1" -p "Enter temperature in Celsius: " <&-)"
     [ -z "$celsius" ] && exit
-    [[ "$celsius" =~ ^-?[0-9]+(\.[0-9]+)?$ ]] || { notify-send "Error: Not a valid number"; exit 1; }
+    [[ "$celsius" =~ ^-?[0-9]+(\.[0-9]+)?$ ]] || { fyi "Error: Not a valid number"; exit 1; }
     fahrenheit=$(bc <<< "scale=2; ($celsius * 9/5) + 32")
-    notify-send -h string:bgcolor:#bf616a "$celsius°C is equal to $fahrenheit°F"
+    fyi -H "string:bgcolor:#bf616a" "$celsius°C is equal to $fahrenheit°F"
 }
 
 

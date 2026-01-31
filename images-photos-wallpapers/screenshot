@@ -3,7 +3,7 @@ set -euo pipefail
 export DISPLAY="${DISPLAY:-:0}"
 
 # Dependencies check
-for cmd in xclip import notify-send; do command -v "$cmd" &>/dev/null || { echo "Missing: $cmd" >&2; exit 1; }; done
+for cmd in xclip import fyi; do command -v "$cmd" &>/dev/null || { echo "Missing: $cmd" >&2; exit 1; }; done
 
 OUTDIR="${2:-$HOME/Screenshots}"; mkdir -p "$OUTDIR"
 FILE="$OUTDIR/$(date +%Y%m%d_%H%M%S).png"
@@ -32,19 +32,19 @@ post(){
             -annotate +20+20 "${WATERMARK_TEXT:-$(date '+%Y-%m-%d %H:%M')}" \
             "$FILE"
     }
-    xclip -selection clipboard -t image/png -i "$FILE" && notify-send -i "$FILE" "Screenshot: $(basename "$FILE")"
+    xclip -selection clipboard -t image/png -i "$FILE" && fyi -i "$FILE" "Screenshot: $(basename "$FILE")"
     command -v imgcliphist && imgcliphist add
 }
 
 colorpicker(){ 
-    command -v magick &>/dev/null || { notify-send "Missing: magick"; exit 1; }
+    command -v magick &>/dev/null || { fyi "Missing: magick"; exit 1; }
     if command -v slop &>/dev/null; then
         import -window root -crop "$(slop --tolerance=0 || exit 1)" "$TMP"
     else
         import "$TMP"
     fi
     hex=$(magick "$TMP" -scale 1x1\! -format "#%[hex:p{0,0}]" info: 2>/dev/null || echo "#??????")
-    echo "$hex" | xclip -selection clipboard -i && notify-send -i "$TMP" "Color: $hex"
+    echo "$hex" | xclip -selection clipboard -i && fyi -i "$TMP" "Color: $hex"
 }
 
 capture_full(){ 

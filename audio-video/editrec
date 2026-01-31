@@ -16,4 +16,4 @@ ffmpeg -i applied.mkv -i audio*.wav -map 0 -map 1:a -c:v copy -shortest final.mk
 
 rm cam.MOV box.mkv applied.mkv
 
-notify-send "Video edit finished"
+fyi "Video edit finished"

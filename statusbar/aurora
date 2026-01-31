@@ -65,7 +65,7 @@ update () {
 		curl -so $kindex $kurl && \
 		$killcmd && \
 		magick $latest $viewline -resize x512 +append $combo && \
-		notify-send -t 30000 -u low -i $viewline "🌈Aurora Forecast Updated" "$(tail -n 9 $forecast)"
+		fyi -t 30000 -u low -i $viewline "🌈Aurora Forecast Updated" "$(tail -n 9 $forecast)"
 }
 
 # script usage
@@ -79,16 +79,16 @@ esac
 
 # clickable bar commands + notifications
 case $BLOCK_BUTTON in
-		1) notify-send -t 60000 -u low -i $combo "Aurora Latest Forecast (right-click: kindex)" "$(tail -n 9 $forecast)" ;;
+		1) fyi -t 60000 -u low -i $combo "Aurora Latest Forecast (right-click: kindex)" "$(tail -n 9 $forecast)" ;;
 		2) curl -so $forecast $forecasturl && \
 			curl -so $latest $latesturl && \
 			curl -so $viewline $viewlineurl && \
 			curl -so $kindex $kurl && \
 			$killcmd && \
 			magick $latest $viewline -resize x512 +append $combo && \
-			notify-send -i $latest "Aurora forecast updated!" "Left-click, right-click, or scroll" ;;
-		3) notify-send -t 60000 -u low -i $kindex "Aurora Kp Index (left-click: latest/viewline)" "$(tail -n 9 $forecast)" ;;
-		4) notify-send -t 60000 -u low -i $latest "Latest Aurora Forecast" "$(tail -n 9 $forecast)" ;;
-		5) notify-send -t 60000 -u low -i $viewline "Tonight's Aurora Forecast" "$(tail -n 9 $forecast)" ;;
+			fyi -i $latest "Aurora forecast updated!" "Left-click, right-click, or scroll" ;;
+		3) fyi -t 60000 -u low -i $kindex "Aurora Kp Index (left-click: latest/viewline)" "$(tail -n 9 $forecast)" ;;
+		4) fyi -t 60000 -u low -i $latest "Latest Aurora Forecast" "$(tail -n 9 $forecast)" ;;
+		5) fyi -t 60000 -u low -i $viewline "Tonight's Aurora Forecast" "$(tail -n 9 $forecast)" ;;
 		6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac

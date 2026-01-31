@@ -6,7 +6,7 @@
 export DISPLAY=:0
 
 notif() {
-notify-send -t 3000 -h string:bgcolor:#ebcb8b "Brightness adjusted!"
+fyi -t 3000 -H "string:bgcolor:#ebcb8b" "Brightness adjusted!"
 }
 
 dimm() {

@@ -44,22 +44,22 @@ output() { # copy directly from command output
 write() { # write current clip into directory, txt or img
 		[[ -z $2 ]] && FOLDER=$HIST || FOLDER=$2
 
-		[ -e "$HIST" ] || notify-send "Creating directory $HIST..."; mkdir -p $HIST
+		[ -e "$HIST" ] || fyi "Creating directory $HIST..."; mkdir -p $HIST
 		ISIMG=$(xclip -selection clipboard -o -t TARGETS | grep png)
 
 		if [[ -n $ISIMG ]]; then
 		   	xclip -selection clipboard -t image/png -o > $HIST/$(date '+%a_%b%d%Y_%H%M%S').png
-			notify-send -i "$HIST/$(date '+%a_%b%d%Y_%H%M%S').png" " clipped img"
+			fyi -i "$HIST/$(date '+%a_%b%d%Y_%H%M%S').png" " clipped img"
 		else
 				CLIP=$(xclip -o -selection primary | xclip -i -f -selection clipboard 2>/dev/null)
 				MULTILINE=$(echo "$CLIP" | sed -e 's/\ /'"SPACEPL"'/g' -e 's/\//'"SLASHPL"'/g' -e 's/\:/'"COLONPL"'/g' -e ':a;N;$!ba;s/\n/'"NEWLINEPL"'/g')
 				touch "$HIST/$MULTILINE"
-				notify-send " $MULTILINE"
+				fyi " $MULTILINE"
 		fi
 }
 
 link() {
-		wget -q "$2" -P $HIST && notify-send " img saved"
+		wget -q "$2" -P $HIST && fyi " img saved"
 }
 
 
@@ -71,9 +71,9 @@ sel() { # select from clip history and re-copy to clipboard
 copy() { # my fzfub script has ctrl-c and enter bound to copy
 		SELECTION=$2
 		if [[ -n $(file -b --mime-type "$SELECTION" | grep png) ]]; then 
-				xclip -i -selection clipboard -t image/png "$SELECTION" && notify-send -i $SELECTION "reclipped img "
+				xclip -i -selection clipboard -t image/png "$SELECTION" && fyi -i $SELECTION "reclipped img "
 		else 
-				notify-send  $(basename $SELECTION)
+				fyi  $(basename $SELECTION)
 				basename $SELECTION | sed -e "s/SPACEPL/\ /g" -e "s/SLASHPL/\//g" -e "s/COLONPL/:/g" -e "s/NEWLINEPL/\n/g" | xclip -i -selection clipboard
 		fi
 }

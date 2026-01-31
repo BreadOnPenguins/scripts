@@ -29,7 +29,7 @@ SPACE=$(df -h "$CURRENT_DISK" | awk 'NR==2 {print $4}')
 # Middle-click to change format
 # Modulo used to wrap around when it reaches end of disks array or format
 case $BLOCK_BUTTON in
-		1) notify-send -t 60000 "$(dysk --color no -c free+mp+use+size)" ;;
+		1) fyi -t 60000 "$(dysk --color no -c free+mp+use+size)" ;;
 		3) echo "$INDEX $(( ($FORMAT + 1) % 2 ))" > "$DISKS_FILE" ;;
 		4) echo "$(( ($INDEX + 1) % ${#DISKS[@]} )) $FORMAT" > "$DISKS_FILE" ;;
 		5) echo "$(( ($INDEX - 1) % ${#DISKS[@]} )) $FORMAT" > "$DISKS_FILE" ;;

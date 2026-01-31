@@ -11,7 +11,7 @@ sink_name=$(pactl -f json list sinks | jq -r --arg sink_pretty_name "$selection"
 
 # Set the selected sink as default
 if [ -n "$sink_name" ]; then
-    pactl set-default-sink "$sink_name" && notify-send "Audio switched to: $selection"
+    pactl set-default-sink "$sink_name" && fyi "Audio switched to: $selection"
 else
-    notify-send "Audio switch failed"
+    fyi "Audio switch failed"
 fi

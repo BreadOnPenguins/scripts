@@ -11,14 +11,14 @@ record() {
 		ffmpeg -f pulse -i 3 "$HOME/guitar_$(date '+%a__%b%d__%H_%M_%S').wav" &
 		echo $! > /tmp/guitarpid
 		echo "Rec 🎸•" > /tmp/recordingicon && pkill -RTMIN+3 dwmblocks
-		notify-send -t 500 -h string:bgcolor:#a3be8c "Recording guitar..."
+		fyi -t 500 -H "string:bgcolor:#a3be8c" "Recording guitar..."
 }
 
 end() {
 		kill -15 "$(cat /tmp/guitarpid)" && rm -f /tmp/guitarpid
 		pactl unload-module module-loopback
 		echo "" > /tmp/recordingicon && pkill -RTMIN+3 dwmblocks
-		notify-send -t 500 -h string:bgcolor:#bf616a "Guitar recording ended."
+		fyi -t 500 -H "string:bgcolor:#bf616a" "Guitar recording ended."
 }
 
 # If the recording pid exists, end recording. If not, start recording

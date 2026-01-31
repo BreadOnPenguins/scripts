@@ -17,7 +17,7 @@ while [ $TOTAL_SECONDS -gt 0 ]; do
     ((TOTAL_SECONDS--))
 done
 
-notify-send "Timer ended, take a break"
+fyi "Timer ended, take a break"
 cleanup
 }
 
@@ -29,5 +29,5 @@ menu () {
 
 case "$#" in
 		0) menu ;;
-		1) notify-send "Killing timer..." & kill -TERM $(pgrep -f ~/.local/bin/statusbar/status-timer) ;;
+		1) fyi "Killing timer..." & kill -TERM $(pgrep -f ~/.local/bin/statusbar/status-timer) ;;
 esac

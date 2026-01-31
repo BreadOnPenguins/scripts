@@ -30,14 +30,14 @@ case $2 in
 				ILABEL='·.·★⋆⁺₊⋆·.·★⋆⁺₊⋆𝖜𝖆𝖑𝖑𝖕𝖆𝖕𝖊𝖗 𝖒𝖊𝖓𝖚⋆⁺₊⋆★·.·⋆⁺₊⋆★·.·'
 				LABEL='[ᴄᴛʀʟ 𝐰·ᴘʏᴡᴀʟ 𝐝·ᴅɪᴍ 𝐟·ғʟᴀʀᴇ 𝐠·ɢʀᴏᴠᴇ 𝐭·ᴛᴇɴᴅᴇɴᴄʏ]' ;;
 		*m) # ₊⊹ɪᴍɢᴍɢᴋ⊹₊ options
-				FZFARGS='ctrl-r:become(fzfubrefresh {}),ctrl-e:execute-silent(imgmgk stripexif {})+become(fzfubrefresh {}),alt-j:execute-silent(imgmgk jpg {})+become(fzfubrefresh {}),alt-p:execute-silent(imgmgk png {})+become(fzfubrefresh {}),ctrl-d:execute(rm -i {} && notify-send {} deleted)+become(fzfubrefresh {}),ctrl-s:execute-silent(imgmgk scale {+})+become(fzfubrefresh {}),ctrl-b:execute-silent(imgmgk bw {+})+become(fzfubrefresh {}),ctrl-w:execute-silent(imgmgk wm {+})+become(fzfubrefresh {}),ctrl-g:become(gimp {+} > /dev/null 2>&1),ctrl-t:execute-silent(imgmgk transparency {+})+become(fzfubrefresh {}),ctrl-f:execute-silent(imgmgk flip {+})+become(fzfubrefresh {}),ctrl-v:execute-silent(imgmgk vflip {+})+become(fzfubrefresh {}),ctrl-l:execute-silent(imgmgk border {+})+become(fzfubrefresh {}),ctrl-h:execute-silent(imgmgk wborder {+})+become(fzfubrefresh {})'
+				FZFARGS='ctrl-r:become(fzfubrefresh {}),ctrl-e:execute-silent(imgmgk stripexif {})+become(fzfubrefresh {}),alt-j:execute-silent(imgmgk jpg {})+become(fzfubrefresh {}),alt-p:execute-silent(imgmgk png {})+become(fzfubrefresh {}),ctrl-d:execute(rm -i {} && fyi {} deleted)+become(fzfubrefresh {}),ctrl-s:execute-silent(imgmgk scale {+})+become(fzfubrefresh {}),ctrl-b:execute-silent(imgmgk bw {+})+become(fzfubrefresh {}),ctrl-w:execute-silent(imgmgk wm {+})+become(fzfubrefresh {}),ctrl-g:become(gimp {+} > /dev/null 2>&1),ctrl-t:execute-silent(imgmgk transparency {+})+become(fzfubrefresh {}),ctrl-f:execute-silent(imgmgk flip {+})+become(fzfubrefresh {}),ctrl-v:execute-silent(imgmgk vflip {+})+become(fzfubrefresh {}),ctrl-l:execute-silent(imgmgk border {+})+become(fzfubrefresh {}),ctrl-h:execute-silent(imgmgk wborder {+})+become(fzfubrefresh {})'
 				ILABEL="[ᴀʟᴛ: 𝐣·ᴊᴘɢ 𝐩·ᴘɴɢ | ᴄᴛʀʟ: 𝐝·ᴅᴇʟ 𝐞·ᴇxɪғ 𝐛·ʙ&ᴡ 𝐰·ᴡᴛʀᴍᴀʀᴋ"
 				LABEL="𝐠·➡ɢɪᴍᴘ 𝐭·ᴛʀᴀɴsᴘᴀʀᴇɴᴛ 𝐟/𝐯·ғʟɪᴘ 𝐥·ʙʟᴋ 𝐡·ᴡʜᴛᴇ ʙᴏʀᴅʀ]" ;;
 		*c) # cliphist options
 				ILABEL="ᴄʟɪᴘʜɪsᴛ: ᴇɴᴛᴇʀ/ᴄᴛʀʟ-c: ᴄᴏᴘʏ"
 				LABEL="[ᴄᴛʀʟ g: ᴇᴅɪᴛ ɪɴ ɢɪᴍᴘ | d: ᴅᴇʟ | t: ᴛᴏ ᴛʀᴀɴsᴘᴀʀᴇɴᴛ]"
-				FZFARGS='enter:execute(cliphist copy {}),ctrl-c:execute(cliphist copy {}),ctrl-t:execute-silent(imgmgk transparencyrecopy {+}),ctrl-g:become(gimp {+} > /dev/null 2>&1),ctrl-d:execute(rm {} && notify-send {} deleted)' ;;	
-		*) FZFARGS='ctrl-d:execute(rm -i {} && notify-send {} deleted)' ;; # normal options
+				FZFARGS='enter:execute(cliphist copy {}),ctrl-c:execute(cliphist copy {}),ctrl-t:execute-silent(imgmgk transparencyrecopy {+}),ctrl-g:become(gimp {+} > /dev/null 2>&1),ctrl-d:execute(rm {} && fyi {} deleted)' ;;	
+		*) FZFARGS='ctrl-d:execute(rm -i {} && fyi {} deleted)' ;; # normal options
 esac
 
 # run fzf with preview and given vars
