@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-word=${1:-$(xclip -o -selection primary 2>/dev/null || wl-paste 2>/dev/null)}
+word=${1:-$(xclip -o -selection primary 2>/dev/null || wl-paste -p 2>/dev/null)}
 
 # Check for empty word or special characters
 [[ -z "$word" || "$word" =~ [\/] ]] && notify-send -h string:bgcolor:#bf616a -t 3000 "Invalid input." && exit 0
@@ -35,3 +35,6 @@ notify-send -t 60000 "$word -" "$def"
 # normal=$(tput sgr0) # Reset text to normal
 # echo "${bold}Definition of $word"
 # echo "${normal}$def"
+
+# Add a name for the Notification.
+# notify-send -a "Definition" -t 60000 "$word -" "$def"
