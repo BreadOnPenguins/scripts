@@ -14,7 +14,7 @@ query=$(curl -s --connect-timeout 5 --max-time 10 "https://api.dictionaryapi.dev
 [[ "$query" == *"No Definitions Found"* ]] && notify-send -h string:bgcolor:#bf616a -t 3000 "Invalid word." && exit 0
 
 # Show only first 3 definitions
-def=$(echo "$query" | jq -r '[.[].meanings[] | {pos: .partOfSpeech, def: .definitions[].definition}] | .[:3].[] | "\n\(.pos). \(.def)"')
+def=$(echo "$query" | jq -r '[.[].meanings[] | {pos: .partOfSpeech, def: .definitions[].definition}] | .[:3][] | "\n\(.pos). \(.def)"')
 
 # Requires a notification daemon to be installed
 notify-send -t 60000 "$word -" "$def"
